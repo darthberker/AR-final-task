@@ -8,43 +8,56 @@ using UnityEngine.XR.ARSubsystems;
 public class SpawnObjectOnPlane : MonoBehaviour
 {
     private ARRaycastManager rayCastManager;
-    private GameObject spawnedObject;
+    
 
     [SerializeField]
     private GameObject PlaceablePrefab;
 
     static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
+    private GameObject spawnedObject;
+    private List<GameObject> list = new List<GameObject>();
 
     private void Awake()
     {
         rayCastManager = GetComponent<ARRaycastManager>();
 
+
     }
 
     bool TryGetTouchPosition(out Vector2 touchPosition)
     {
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 )
         {
-            touchPosition = Input.GetTouch(0).position;
-            return true;
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Ended)
+            {
+                touchPosition = Input.GetTouch(0).position;
+                return true;
+            }
+                
 
         }
         touchPosition = default;
         return false;
 
     }
+
+    
     private void Update()
     {
         if(!TryGetTouchPosition(out Vector2 touchPosition))
         {
             return;
         }
+        
         if(rayCastManager.Raycast(touchPosition, s_Hits, TrackableType.PlaneWithinPolygon))
         {
             var hitPose = s_Hits[0].pose;
+            /*
             if(spawnedObject == null)
             {
                 spawnedObject = Instantiate(PlaceablePrefab, hitPose.position, PlaceablePrefab.transform.rotation);
+                
             }
             else
             {
@@ -52,6 +65,12 @@ public class SpawnObjectOnPlane : MonoBehaviour
                 spawnedObject.transform.rotation = PlaceablePrefab.transform.rotation;
 
             }
+            */
+            spawnedObject = Instantiate(PlaceablePrefab, hitPose.position, PlaceablePrefab.transform.rotation);
+
+            list.Add(spawnedObject);
+            ChangeCount.listCount = list.Count;
         }
+        
     }
 }
