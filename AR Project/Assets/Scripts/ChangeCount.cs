@@ -20,5 +20,5 @@ public class ChangeCount : MonoBehaviour
         text.text = listCount.ToString();
     }
 
-    
+    //AJSFJKGagSKFJGHJKASFJhgla
 }
